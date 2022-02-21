@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BusinessProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -24,5 +25,12 @@ Route::group([
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });
+Route::group([
+    'middleware' => 'jwt.verify.Business',
+    'prefix' => 'profile'
+], function ($router) {
+    Route::get('/user', [BusinessProfileController::class, 'index']);
+    Route::post('/business/add', [BusinessProfileController::class, 'store']);
 
+});
 
