@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\BusinessProfile;
 use Exception;
+use Illuminate\Cache\Repository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -42,16 +43,13 @@ class BusinessProfileController extends Controller
 
         try{
 
-            $user = auth()->user()->businessProfile()->create(array_merge($validator->validated()));
+            $user = auth()->user()->businessProfile()->update(array_merge($validator->validated()));
             dd($user);
         }catch(Exception $e){
             throw $e;
         }
 
-        // $business_profile = BusinessProfile::create(array_merge(
-        //     $validator->validated(),
-        //     ['user_id' => ]
-        // ));
+
     }
 
     /**
@@ -62,7 +60,11 @@ class BusinessProfileController extends Controller
      */
     public function show($id)
     {
-        //
+        $businessProfile = BusinessProfile::find($id);
+        if(!$businessProfile){
+            return response()->json("business Profile not found", 400);
+        }
+        return $businessProfile;
     }
 
     /**
@@ -74,7 +76,34 @@ class BusinessProfileController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $businessProfile = BusinessProfile::find($id);
+        if(!$businessProfile){
+            return response()->json("businessProfile not found", 400);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'business_type' => 'required',
+            'business_name' => 'required',
+            'address' => 'required',
+            'phone_number' => 'required',
+            'service_description' => 'required',
+            'open_at' => 'required',
+            'close_at' => 'required'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+
+        try{
+            $updatedProfile =  array_merge($validator->validated());
+            auth()->user()->businessProfile()->where('id',$id)->update($updatedProfile);
+
+        }catch(Exception $e){
+            throw $e;
+        }
+
+       return response()->json($updatedProfile ,200);
     }
 
     /**
@@ -85,6 +114,8 @@ class BusinessProfileController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $dataToBeDeleted= BusinessProfile::find($id);
+        $dataToBeDeleted->delete();
+        return response()->json('deleted',200);
     }
 }
