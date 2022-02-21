@@ -31,6 +31,9 @@ Route::group([
 ], function ($router) {
     Route::get('/user', [BusinessProfileController::class, 'index']);
     Route::post('/business/add', [BusinessProfileController::class, 'store']);
+    Route::get('/business/update/{id}', [BusinessProfileController::class, 'show']);
+    Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
+    Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
 
 });
 
