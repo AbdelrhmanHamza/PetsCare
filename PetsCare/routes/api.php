@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BusinessProfileController;
+use App\Http\Controllers\ClientController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,4 +38,19 @@ Route::group([
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
 
 });
+Route::group([
+    'middleware' => 'jwt.verify',
+    'prefix'=>'profile'
+],function ($router){
+    Route::get('/user', [ClientControllerr::class, 'index']);
+    Route::post('/client/add', [ClientController::class, 'store']);
+    Route::get('/client/edit/{id}', [ClientController::class, 'show']);
+    Route::post('/client/edit/{id}', [ClientController::class, 'update']);
+    Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
+
+
+});
+
+
+
 
