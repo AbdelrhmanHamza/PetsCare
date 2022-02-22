@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientProfile;
+use App\Models\Pet;
 use Exception;
 
 use Illuminate\Http\Request;
@@ -18,7 +19,10 @@ class ClientController extends Controller
      */
     public function index()
     {
-        return response()->json('hello amr', 200);
+
+        $clientprofiles = ClientProfile::all();
+        $pets=Pet::all();
+        return response()->json([$clientprofiles,$pets],200);
     }
 
     /**
@@ -41,15 +45,13 @@ class ClientController extends Controller
         }
 
         $foundProfile = auth()->user()->clientProfile();
-        dd($foundProfile);
         try {
             if ($foundProfile) {
-                $result = auth()->user()->clientProfile()->update(array_merge($validator->validated()));
-                return response()->json(["Data found and updated", $result] , 200);
-            }
-            else{
                 $user = auth()->user()->clientProfile()->create(array_merge($validator->validated()));
                 return response()->json(['created new profile', $user], 200);
+            } else {
+                $result = auth()->user()->clientProfile()->update(array_merge($validator->validated()));
+                return response()->json(["Data found and updated", $result], 200);
             }
         } catch (Exception $e) {
             throw $e;
@@ -69,7 +71,7 @@ class ClientController extends Controller
         if (!$clientprofile) {
             return response()->json("the client isnot found", 404);
         }
-        return response()->json($clientprofile) ;
+        return response()->json($clientprofile);
     }
 
     /**
@@ -115,7 +117,6 @@ class ClientController extends Controller
     {
         $clientprofile = ClientProfile::find($id);
         $clientprofile->delete();
-        return response()->json('done' , 200);
-
+        return response()->json('done', 200);
     }
 }
