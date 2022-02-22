@@ -27,4 +27,14 @@ class BusinessProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+/**
+ * The roles that belong to the BusinessProfile
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+ */
+public function servicePackage()
+{
+    return $this->belongsToMany(ServicePackage::class);
+}
+
 }

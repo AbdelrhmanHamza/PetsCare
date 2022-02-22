@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BusinessProfileController;
 use App\Http\Controllers\ClientController;
-
+use App\Http\Controllers\ServicePackageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -36,6 +36,11 @@ Route::group([
     Route::get('/business/update/{id}', [BusinessProfileController::class, 'show']);
     Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
+    Route::post('/business/{id}/package/add', [ServicePackageController::class, 'store']);
+    Route::get('/business/{id}/package/all', [ServicePackageController::class, 'index']);
+    Route::get('/business/package/{id}', [ServicePackageController::class, 'show']);
+    Route::post('/business/package/update/{id}', [ServicePackageController::class, 'update']);
+    Route::get('/business/package/delete/{id}', [ServicePackageController::class, 'destroy']);
 
 });
 Route::group([
@@ -47,7 +52,6 @@ Route::group([
     Route::get('/client/edit/{id}', [ClientController::class, 'show']);
     Route::post('/client/edit/{id}', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
-
 
 });
 
