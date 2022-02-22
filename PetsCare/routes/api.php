@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BusinessProfileController;
+use App\Http\Controllers\BusinessRequestController;
+use App\Http\Controllers\ClientRequestController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\PetController;
@@ -67,6 +69,27 @@ Route::group([
     Route::post('/pet/edit/{id}', [PetController::class, 'update']);
     Route::post('/pet/delete/{id}', [PetController::class, 'destroy']);
 });
+
+Route::group([
+    'middleware' => 'jwt.verify',
+    'prefix'=>'client'
+], function ($router){
+      Route::get('/request',[ClientRequestController::class , 'index']);
+      Route::post('/request/add', [ClientRequestController::class, 'store']);
+      Route::get('/request/show/{id}', [ClientRequestController::class, 'show']);
+      Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
+      Route::post('/request/delete/{id}', [ClientRequestController::class, 'destroy']);
+});
+
+Route::group([
+    'middleware' => 'jwt.verify',
+    'prefix'=>'business'
+], function ($router){
+      Route::get('/request',[BusinessRequestController::class , 'index']);
+      Route::get('/request/show/{id}', [BusinessRequestController::class, 'show']);
+      Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
+});
+
 
 
 
