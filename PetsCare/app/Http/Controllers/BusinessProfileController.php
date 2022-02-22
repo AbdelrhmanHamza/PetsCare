@@ -43,8 +43,7 @@ class BusinessProfileController extends Controller
 
         try{
 
-            $user = auth()->user()->businessProfile()->update(array_merge($validator->validated()));
-            dd($user);
+             auth()->user()->businessProfile()->create(array_merge($validator->validated()));
         }catch(Exception $e){
             throw $e;
         }
