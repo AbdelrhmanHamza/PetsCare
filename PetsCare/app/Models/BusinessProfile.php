@@ -41,4 +41,13 @@ public function servicePackage()
     public function businessRequest(){
         return $this->hasMany(ClientBusinessResquest::class);
     }
+    /**
+     * Get all of the usersImage for the BusinessProfile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function usersImage()
+    {
+        return $this->hasMany(UsersImage::class);
+    }
 }

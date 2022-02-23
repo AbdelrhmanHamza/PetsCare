@@ -9,6 +9,7 @@ use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\BusinessSubscribtionController;
 use App\Http\Controllers\SubscribtionPackageController;
+use App\Http\Controllers\UsersImageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -42,9 +43,12 @@ Route::group([
 ], function ($router) {
     Route::get('/user', [BusinessProfileController::class, 'index']);
     Route::post('/business/add', [BusinessProfileController::class, 'store']);
-    Route::get('/business/update/{id}', [BusinessProfileController::class, 'show']);
+    Route::get('/business/show/{id}', [BusinessProfileController::class, 'show']);
     Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
+    Route::post('/business/image/upload/{id}', [UsersImageController::class, 'store']);
+    Route::get('/business/image/show/{id}', [UsersImageController::class, 'show']);
+
     Route::post('/business/{id}/package/add', [ServicePackageController::class, 'store']);
     Route::get('/business/{id}/package/all', [ServicePackageController::class, 'index']);
     Route::get('/business/package/{id}', [ServicePackageController::class, 'show']);
