@@ -122,13 +122,11 @@ class AuthController extends Controller
         $subscription = $user->userSubscribtionPackages()->latest()->first();
         if ($subscription) {
             $subscriptionPeriod = SubscribtionPackage::find($subscription->subscribtion_package_id);
-            if ($subscription) {
-                $today = date("Y-m-d");
-                $effectiveDate = date('Y-m-d', strtotime("+" . (int)$subscriptionPeriod->activation_period . " months", strtotime($subscription->subscribtion_date)));
-                if ($effectiveDate > $today) {
-                    $subscription->is_expired = true;
-                    $subscription->update();
-                }
+            $today = date("Y-m-d");
+            $effectiveDate = date('Y-m-d', strtotime("+" . (int)$subscriptionPeriod->activation_period . " months", strtotime($subscription->subscribtion_date)));
+            if ($effectiveDate > $today) {
+                $subscription->is_expired = true;
+                $subscription->update();
             }
         }
     }
