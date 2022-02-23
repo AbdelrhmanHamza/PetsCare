@@ -2,8 +2,10 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\BusinessProfileController;
+use App\Http\Controllers\BusinessSubscribtionController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ServicePackageController;
+use App\Http\Controllers\SubscribtionPackageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +28,9 @@ Route::group([
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::get('/packages/all', [SubscribtionPackageController::class, 'index']);
+    Route::get('/packages/{id}', [SubscribtionPackageController::class, 'show']);
+
 });
 Route::group([
     'middleware' => 'jwt.verify.Business',
@@ -41,6 +46,10 @@ Route::group([
     Route::get('/business/package/{id}', [ServicePackageController::class, 'show']);
     Route::post('/business/package/update/{id}', [ServicePackageController::class, 'update']);
     Route::get('/business/package/delete/{id}', [ServicePackageController::class, 'destroy']);
+    Route::post('/business/package/subscribe', [BusinessSubscribtionController::class, 'store']);
+    Route::get('/business/package/subscribe/current', [BusinessSubscribtionController::class, 'show']);
+
+
 
 });
 Route::group([
@@ -53,6 +62,15 @@ Route::group([
     Route::post('/client/edit/{id}', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
 
+});
+
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'admin'
+], function ($router) {
+    Route::post('/packages/add', [SubscribtionPackageController::class, 'store']);
+    Route::get('/packages/update/{id}', [SubscribtionPackageController::class, 'update']);
+    Route::get('/packages/delete/{id}', [SubscribtionPackageController::class, 'destroy']);
 });
 
 
