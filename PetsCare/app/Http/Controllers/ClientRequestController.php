@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ClientProfile;
-use App\Models\Pet;
-use Exception;
-
+use App\Models\ClientBusinessResquest;
 use Illuminate\Http\Request;
+use Exception;
 use Illuminate\Support\Facades\Validator;
 
 
-class ClientController extends Controller
+class ClientRequestController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,10 +17,8 @@ class ClientController extends Controller
      */
     public function index()
     {
-
-        $clientprofiles = ClientProfile::all();
-        $pets=Pet::all();
-        return response()->json([$clientprofiles,$pets],200);
+        $request = auth()->user()->clientProfile->clientRequest;
+        return response()->json([$request], 200);
     }
 
     /**
@@ -34,25 +30,26 @@ class ClientController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'address' => 'required',
-            'phone_number' => 'required',
+            'client_profile_id' => 'required',
+            'business_profile_id' => 'required',
+            'package_id' => 'required',
+            'description' => 'required',
+            'request_due_date' => 'required'
 
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
 
-        $foundProfile = auth()->user()->clientProfile();
+        $foundProfile = auth()->user()->clientProfile;
+        if (!$foundProfile)
+            return response()->json('No business profile found, Please fill profile data to be able to add pets!', 400);
+
         try {
-            if ($foundProfile) {
-                $user = auth()->user()->clientProfile()->create(array_merge($validator->validated()));
-                return response()->json(['created new profile', $user], 200);
-            } else {
-                $result = auth()->user()->clientProfile()->update(array_merge($validator->validated()));
-                return response()->json(["Data found and updated", $result], 200);
-            }
+
+            $requestInput = array_merge($validator->validated());
+            $clientrequest = ClientBusinessResquest::create($requestInput);
+            return response()->json(['created new request', $clientrequest], 200);
         } catch (Exception $e) {
             throw $e;
         }
@@ -67,11 +64,11 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $clientprofile = ClientProfile::find($id);
-        if (!$clientprofile) {
-            return response()->json("the client isnot found", 404);
+        $clientrequest = ClientBusinessResquest::find($id);
+        if (!$clientrequest) {
+            return response()->json("the request isnot found", 404);
         }
-        return response()->json($clientprofile);
+        return response()->json($clientrequest);
     }
 
     /**
@@ -83,15 +80,16 @@ class ClientController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $clientprofile = ClientProfile::find($id);
-        if (!$clientprofile) {
-            return response()->json("the client isnot found", 404);
+        $clientrequest = ClientBusinessResquest::find($id);
+        if (!$clientrequest) {
+            return response()->json("the pet isnot found", 404);
         }
         $validator = Validator::make($request->all(), [
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'address' => 'required',
-            'phone_number' => 'required',
+            'client_profile_id' => 'required',
+            'business_id' => 'required',
+            'package_id' => 'required',
+            'description' => 'required',
+            'request_due_date' => 'required'
 
         ]);
         if ($validator->fails()) {
@@ -100,7 +98,7 @@ class ClientController extends Controller
 
         try {
             $update = array_merge($validator->validated());
-            $user = auth()->user()->clientProfile()->where('id', $id)->update($update);
+            $user = auth()->user()->clientProfile->clientRequest()->where('id', $id)->update($update);
         } catch (Exception $e) {
             throw $e;
         }
@@ -115,8 +113,8 @@ class ClientController extends Controller
      */
     public function destroy($id)
     {
-        $clientprofile = ClientProfile::find($id);
-        $clientprofile->delete();
+        $clientrequest = ClientBusinessResquest::find($id);
+        $clientrequest->delete();
         return response()->json('done', 200);
     }
 }

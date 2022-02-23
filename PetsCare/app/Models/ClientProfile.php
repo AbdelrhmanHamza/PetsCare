@@ -18,8 +18,20 @@ class ClientProfile extends Model
 
     ];
 
-    // public function user(){
-    //     return $this->belongsTo(User::class);
-    // }
+
+
+     /**
+     * Get all of the businessProfile for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+
+    public function pet(){
+        return $this->hasMany(Pet::class);
+    }
+
+    public function clientRequest(){
+        return $this->hasMany(ClientBusinessResquest::class);
+    }
 
 }

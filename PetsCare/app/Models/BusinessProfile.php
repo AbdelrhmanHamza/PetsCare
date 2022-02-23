@@ -37,4 +37,8 @@ public function servicePackage()
     return $this->belongsToMany(ServicePackage::class);
 }
 
+
+    public function businessRequest(){
+        return $this->hasMany(ClientBusinessResquest::class);
+    }
 }
