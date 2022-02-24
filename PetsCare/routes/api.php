@@ -10,6 +10,7 @@ use App\Http\Controllers\PetController;
 use App\Http\Controllers\BusinessSubscribtionController;
 use App\Http\Controllers\SubscribtionPackageController;
 use App\Http\Controllers\UsersImageController;
+use App\Http\Controllers\SubscribtionPackageFeatureController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -110,6 +111,13 @@ Route::group([
     Route::post('/packages/add', [SubscribtionPackageController::class, 'store']);
     Route::get('/packages/update/{id}', [SubscribtionPackageController::class, 'update']);
     Route::get('/packages/delete/{id}', [SubscribtionPackageController::class, 'destroy']);
+    Route::get('/feature/all', [SubscribtionPackageController::class, 'index']);
+    Route::post('/feature/add', [SubscribtionPackageController::class, 'store']);
+    Route::post('/feature/update/{id}', [SubscribtionPackageController::class, 'update']);
+    Route::get('/feature/show/{id}', [SubscribtionPackageController::class, 'show']);
+    Route::post('/feature/delete/{id}', [SubscribtionPackageController::class, 'destroy']);
+    Route::get('/packages', [SubscribtionPackageFeatureController::class, 'index']);
+    Route::post('/packages/{subscriptionPackageId}/add/{featureId}', [SubscribtionPackageFeatureController::class, 'store']);
 });
 
 
