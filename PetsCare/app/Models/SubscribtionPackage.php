@@ -25,4 +25,14 @@ class SubscribtionPackage extends Model
     {
         return $this->hasMany(UserSubsrcibtionPackage::class);
     }
+    /**
+     * The feature that belong to the SubscribtionPackage
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function feature()
+    {
+        return $this->belongsToMany(Feature::class);
+    }
+
 }
