@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BusinessFilterController;
 use App\Http\Controllers\BusinessProfileController;
 use App\Http\Controllers\BusinessRequestController;
 use App\Http\Controllers\ClientRequestController;
@@ -89,6 +90,8 @@ Route::group([
       Route::get('/request/show/{id}', [ClientRequestController::class, 'show']);
       Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
       Route::post('/request/delete/{id}', [ClientRequestController::class, 'destroy']);
+      Route::get('/request/business',[BusinessFilterController::class , 'index']);
+
 });
 
 Route::group([
@@ -114,6 +117,7 @@ Route::group([
     Route::post('/feature/delete/{id}', [SubscribtionPackageController::class, 'destroy']);
     Route::get('/packages', [SubscribtionPackageFeatureController::class, 'index']);
     Route::post('/packages/{subscriptionPackageId}/add/{featureId}', [SubscribtionPackageFeatureController::class, 'store']);
+
 });
 
 
