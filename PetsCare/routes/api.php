@@ -91,6 +91,7 @@ Route::group([
       Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
       Route::post('/request/delete/{id}', [ClientRequestController::class, 'destroy']);
       Route::get('/request/business',[BusinessFilterController::class , 'index']);
+      Route::get('/request/all',[BusinessFilterController::class , 'businesses']);
 
 });
 

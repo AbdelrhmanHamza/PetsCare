@@ -10,6 +10,11 @@ use Validator;
 
 class BusinessFilterController extends Controller
 {
+
+    public function businesses(Request $request){
+        return response()->json(BusinessProfile::paginate(6));
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,7 +40,7 @@ class BusinessFilterController extends Controller
             $dataToFilter->where('package_price', '>=', (float)$request->max_price);
         }
 
-        $data = $dataToFilter->simplePaginate(10);
+        $data = $dataToFilter->paginate(10);
         return response()->json($data);
     }
 
