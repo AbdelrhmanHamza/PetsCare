@@ -17,7 +17,8 @@ class BusinessProfileController extends Controller
      */
     public function index()
     {
-        return response()->json(auth()->user()->with('BusinessProfile')->get());
+        $user=auth('api')->user();
+        return response()->json(BusinessProfile::where('user_id','=',$user->id)->get());
     }
 
     /**
