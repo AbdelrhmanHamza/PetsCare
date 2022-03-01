@@ -10,6 +10,7 @@ use App\Http\Controllers\ServicePackageController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\BusinessSubscribtionController;
 use App\Http\Controllers\SubscribtionPackageController;
+use App\Http\Controllers\UsersImageController;
 use App\Http\Controllers\SubscribtionPackageFeatureController;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,9 @@ Route::group([
     Route::get('/business/show/{id}', [BusinessProfileController::class, 'show']);
     Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
+    Route::post('/business/image/upload', [UsersImageController::class, 'store']);
+    Route::get('/business/image/show/{id}', [UsersImageController::class, 'show']);
+
     Route::post('/business/{id}/package/add', [ServicePackageController::class, 'store']);
     Route::get('/business/{id}/package/all', [ServicePackageController::class, 'index']);
     Route::get('/business/package/{id}', [ServicePackageController::class, 'show']);

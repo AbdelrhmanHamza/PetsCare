@@ -42,14 +42,8 @@ class BusinessProfileController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        try{
-
-             auth()->user()->businessProfile()->create(array_merge($validator->validated()));
-        }catch(Exception $e){
-            throw $e;
-        }
-
-
+        $profile = auth()->user()->businessProfile()->create(array_merge($validator->validated()));
+        return response()->json($profile , 200);
     }
 
     /**
@@ -61,7 +55,7 @@ class BusinessProfileController extends Controller
     public function show($id)
     {
         $businessProfile = BusinessProfile::find($id);
-        if(!$businessProfile){
+        if (!$businessProfile) {
             return response()->json("business Profile not found", 400);
         }
         return $businessProfile;
@@ -77,7 +71,7 @@ class BusinessProfileController extends Controller
     public function update(Request $request, $id)
     {
         $businessProfile = BusinessProfile::find($id);
-        if(!$businessProfile){
+        if (!$businessProfile) {
             return response()->json("businessProfile not found", 400);
         }
 
@@ -95,15 +89,14 @@ class BusinessProfileController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
-        try{
+        try {
             $updatedProfile =  array_merge($validator->validated());
-            auth()->user()->businessProfile()->where('id',$id)->update($updatedProfile);
-
-        }catch(Exception $e){
+            auth()->user()->businessProfile()->where('id', $id)->update($updatedProfile);
+        } catch (Exception $e) {
             throw $e;
         }
 
-       return response()->json($updatedProfile ,200);
+        return response()->json($updatedProfile, 200);
     }
 
     /**
@@ -114,8 +107,8 @@ class BusinessProfileController extends Controller
      */
     public function destroy($id)
     {
-        $dataToBeDeleted= BusinessProfile::find($id);
+        $dataToBeDeleted = BusinessProfile::find($id);
         $dataToBeDeleted->delete();
-        return response()->json('deleted',200);
+        return response()->json('deleted', 200);
     }
 }
