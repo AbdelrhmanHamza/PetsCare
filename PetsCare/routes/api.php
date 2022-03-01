@@ -36,7 +36,6 @@ Route::group([
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
     Route::get('/packages/all', [SubscribtionPackageController::class, 'index']);
     Route::get('/packages/{id}', [SubscribtionPackageController::class, 'show']);
-
 });
 
 Route::group([
@@ -58,15 +57,12 @@ Route::group([
     Route::get('/business/package/delete/{id}', [ServicePackageController::class, 'destroy']);
     Route::post('/business/package/subscribe', [BusinessSubscribtionController::class, 'store']);
     Route::get('/business/package/subscribe/current', [BusinessSubscribtionController::class, 'show']);
-
-
-
 });
 
 Route::group([
     'middleware' => 'jwt.verify',
-    'prefix'=>'profile'
-],function ($router){
+    'prefix' => 'profile'
+], function ($router) {
     Route::get('/client', [ClientController::class, 'index']);
     Route::post('/client/add', [ClientController::class, 'store']);
     Route::get('/client/show/{id}', [ClientController::class, 'show']);
@@ -76,8 +72,8 @@ Route::group([
 
 Route::group([
     'middleware' => 'jwt.verify',
-    'prefix'=>'profile'
-],function ($router){
+    'prefix' => 'profile'
+], function ($router) {
     Route::get('/pet', [PetController::class, 'index']);
     Route::post('/pet/add', [PetController::class, 'store']);
     Route::get('/pet/show/{id}', [PetController::class, 'show']);
@@ -87,25 +83,24 @@ Route::group([
 
 Route::group([
     'middleware' => 'jwt.verify',
-    'prefix'=>'client'
-], function ($router){
-      Route::get('/request',[ClientRequestController::class , 'index']);
-      Route::post('/request/add', [ClientRequestController::class, 'store']);
-      Route::get('/request/show/{id}', [ClientRequestController::class, 'show']);
-      Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
-      Route::post('/request/delete/{id}', [ClientRequestController::class, 'destroy']);
-      Route::get('/request/business',[BusinessFilterController::class , 'index']);
-      Route::get('/request/all',[BusinessFilterController::class , 'businesses']);
-
+    'prefix' => 'client'
+], function ($router) {
+    Route::get('/request', [ClientRequestController::class, 'index']);
+    Route::post('/request/add', [ClientRequestController::class, 'store']);
+    Route::get('/request/show/{id}', [ClientRequestController::class, 'show']);
+    Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
+    Route::post('/request/delete/{id}', [ClientRequestController::class, 'destroy']);
+    Route::get('/request/business', [BusinessFilterController::class, 'index']);
+    Route::get('/request/all', [BusinessFilterController::class, 'businesses']);
 });
 
 Route::group([
     'middleware' => 'jwt.verify',
-    'prefix'=>'business'
-], function ($router){
-      Route::get('/request',[BusinessRequestController::class , 'index']);
-      Route::get('/request/show/{id}', [BusinessRequestController::class, 'show']);
-      Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
+    'prefix' => 'business'
+], function ($router) {
+    Route::get('/request', [BusinessRequestController::class, 'index']);
+    Route::get('/request/show/{id}', [BusinessRequestController::class, 'show']);
+    Route::post('/request/edit/{id}', [ClientRequestController::class, 'update']);
 });
 
 Route::group([
@@ -122,10 +117,4 @@ Route::group([
     Route::post('/feature/delete/{id}', [SubscribtionPackageController::class, 'destroy']);
     Route::get('/packages', [SubscribtionPackageFeatureController::class, 'index']);
     Route::post('/packages/{subscriptionPackageId}/add/{featureId}', [SubscribtionPackageFeatureController::class, 'store']);
-
 });
-
-
-
-
-
