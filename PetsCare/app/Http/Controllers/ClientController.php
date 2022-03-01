@@ -20,9 +20,9 @@ class ClientController extends Controller
     public function index()
     {
 
-        $clientprofiles = ClientProfile::all();
-        $pets=Pet::all();
-        return response()->json([$clientprofiles,$pets],200);
+        $clientprofiles = ClientProfile::with('pet');
+
+        return response()->json($clientprofiles->get(),200);
     }
 
     /**
