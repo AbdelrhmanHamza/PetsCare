@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\ClientBusinessResquest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
 
 class BusinessRequestController extends Controller
 {
@@ -14,8 +16,12 @@ class BusinessRequestController extends Controller
      */
     public function index()
     {
-        $request = auth()->user()->businessProfile()->with('businessRequest')->get();
-        return response()->json($request, 200);
+        $user=auth('api')->user();
+        $request = DB::table('business_profiles')
+        ->join('client_business_resquests', 'business_profiles.id', '=', 'client_business_resquests.business_profile_id')
+        ->join('client_profiles', 'client_business_resquests.client_profile_id', '=', 'client_profiles.id')
+        ->where('business_profiles.user_id','=',$user->id);
+        return response()->json($request->get(), 200);
     }
 
     /**

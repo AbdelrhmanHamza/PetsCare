@@ -80,7 +80,7 @@ class PetController extends Controller
     {
         $pets = Pet::find($id);
         if (!$pets) {
-            return response()->json("the pet isnot found", 404);
+            return response()->json("the pet is not found", 404);
         }
         $validator = Validator::make($request->all(), [
             'pet_type' => 'required',
