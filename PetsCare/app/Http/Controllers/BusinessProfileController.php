@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\BusinessProfile;
 use Exception;
 use Illuminate\Cache\Repository;
+use App\Models\UsersImage;
+use Storage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,8 +19,8 @@ class BusinessProfileController extends Controller
      */
     public function index()
     {
-        $user=auth('api')->user();
-        return response()->json(BusinessProfile::where('user_id','=',$user->id)->get());
+        $user = auth('api')->user();
+        return response()->json(BusinessProfile::where('user_id', '=', $user->id)->get());
     }
 
     /**
@@ -45,8 +47,18 @@ class BusinessProfileController extends Controller
             return response()->json($validator->errors(), 400);
         }
 
+
+
         $profile = auth()->user()->businessProfile()->create(array_merge($validator->validated()));
-        return response()->json($profile , 200);
+        if ($request->file) {
+            $newRequest["business_profile_id"] = $profile->id;
+            $newRequest["file"] = $request->file('file');
+            $newRequest["name"] = $request->file('file')->getClientOriginalName();
+            $image_added = $this->storeImg($newRequest);
+            $profile["img"] = $image_added;
+            return response()->json($profile, 200);
+        }
+        return response()->json($profile, 200);
     }
 
     /**
@@ -113,5 +125,29 @@ class BusinessProfileController extends Controller
         $dataToBeDeleted = BusinessProfile::find($id);
         $dataToBeDeleted->delete();
         return response()->json('deleted', 200);
+    }
+
+    private function storeImg($request)
+    {
+        $validator = Validator::make($request, [
+            'business_profile_id' => 'required',
+            'file' => 'required|mimes:jpeg,png,jpg'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $file = $request["file"];
+        $name = $request["name"];
+        try {
+
+            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
+        } catch (Exception $e) {
+            throw $e;
+        }
+        // dd($name);
+
+        $uploaded = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
+        $addToDatabase = UsersImage::create($uploaded);
+        return asset('storage/' . $path);
     }
 }

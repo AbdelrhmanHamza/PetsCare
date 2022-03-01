@@ -33,13 +33,8 @@ class UsersImageController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            // 'image_name' => 'required',
-            // 'image_path' => 'required',
-            // 'pet_id' => 'required',
             'business_profile_id' => 'required',
             'file' => 'required|mimes:jpeg,png,jpg'
-
-
         ]);
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
