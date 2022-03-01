@@ -47,7 +47,7 @@ Route::group([
     Route::get('/business/show/{id}', [BusinessProfileController::class, 'show']);
     Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
-    Route::post('/business/image/upload/{id}', [UsersImageController::class, 'store']);
+    Route::post('/business/image/upload', [UsersImageController::class, 'store']);
     Route::get('/business/image/show/{id}', [UsersImageController::class, 'show']);
 
     Route::post('/business/{id}/package/add', [ServicePackageController::class, 'store']);

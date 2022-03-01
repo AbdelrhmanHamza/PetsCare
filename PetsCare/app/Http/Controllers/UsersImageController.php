@@ -57,9 +57,9 @@ class UsersImageController extends Controller
         }
         // dd($name);
 
-        $uploaded =array_merge($validator->validated(), ['image_name' => $name, 'image_path' => $path]);
+        $uploaded =array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/'.$path]);
         $addToDatabase=UsersImage::create($uploaded);
-        return response()->json(asset($path));
+        return response()->json(asset('storage/'.$path));
     }
 
     /**
