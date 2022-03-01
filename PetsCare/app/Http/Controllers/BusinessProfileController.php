@@ -28,7 +28,10 @@ class BusinessProfileController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
+    {/*
+        -> create business profile
+        -> use it's id to create images
+         */
         $validator = Validator::make($request->all(), [
             'business_type' => 'required',
             'business_name' => 'required',
