@@ -22,8 +22,8 @@ class BusinessSeeder extends Seeder
             'address'=>'6 october city',
             'phone_number'=>'01120623383',
             'service_description'=>'we care about all your pets',
-            'open_at'=>'6 am',
-            'close_at'=>'3 pm'
+            'open_at'=>'6:00',
+            'close_at'=>'15:00'
     ]);
 
     BusinessProfile::create([
@@ -33,8 +33,8 @@ class BusinessSeeder extends Seeder
         'address'=>'6 october city',
         'phone_number'=>'01120623383',
         'service_description'=>'we care about all your pets',
-        'open_at'=>'6 am',
-        'close_at'=>'3 pm'
+        'open_at'=>'6:00',
+        'close_at'=>'15:00'
 ]);
     }
 }
