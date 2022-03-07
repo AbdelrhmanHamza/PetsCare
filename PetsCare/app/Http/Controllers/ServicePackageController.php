@@ -64,7 +64,7 @@ class ServicePackageController extends Controller
     public function show($id)
     {
         $profileResult = auth()->user()->businessProfile()->find($id);
-        $package = ServicePackage::find($id);
+        $package = $profileResult->servicePackage;
         return response()->json($package);
     }
 

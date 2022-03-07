@@ -73,6 +73,7 @@ class BusinessProfileController extends Controller
         if (!$businessProfile) {
             return response()->json("business Profile not found", 400);
         }
+        $businessProfile->usersImage;
         return $businessProfile;
     }
 
@@ -107,6 +108,14 @@ class BusinessProfileController extends Controller
         try {
             $updatedProfile =  array_merge($validator->validated());
             auth()->user()->businessProfile()->where('id', $id)->update($updatedProfile);
+            if ($request->file) {
+                $updateImg["imgID"] = $businessProfile->usersImage[0]->id;
+                $updateImg["file"] = $request->file('file');
+                $updateImg["name"] = $request->file('file')->getClientOriginalName();
+                $image_added = $this->updateImg($updateImg);
+                $profile["img"] = $image_added;
+                return response()->json($profile, 200);
+            }
         } catch (Exception $e) {
             throw $e;
         }
@@ -148,6 +157,26 @@ class BusinessProfileController extends Controller
 
         $uploaded = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
         $addToDatabase = UsersImage::create($uploaded);
+        return asset('storage/' . $path);
+    }
+    private function updateImg($request)
+    {
+        $validator = Validator::make($request, [
+            'id' => 'required',
+            'file' => 'required|mimes:jpeg,png,jpg'
+        ]);
+        $old_img = UsersImage::find($request["imgID"]);
+        unlink($old_img->image_path);
+        $file = $request["file"];
+        $name = $request["name"];
+        try {
+
+            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
+        } catch (Exception $e) {
+            throw $e;
+        }
+        $updated = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
+        $old_img->update($updated);
         return asset('storage/' . $path);
     }
 }

@@ -41,20 +41,17 @@ class UsersImageController extends Controller
         }
         $file = $request->file('file');
         $name = $file->getClientOriginalName();
-        try
-        {
+        try {
 
-            $path =Storage::disk('public')->put('/BusinessProfiles', $file);
-
-        }catch(Exception $e)
-        {
+            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
+        } catch (Exception $e) {
             throw $e;
         }
         // dd($name);
 
-        $uploaded =array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/'.$path]);
-        $addToDatabase=UsersImage::create($uploaded);
-        return response()->json(asset('storage/'.$path));
+        $uploaded = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
+        $addToDatabase = UsersImage::create($uploaded);
+        return response()->json(asset('storage/' . $path));
     }
 
     /**
@@ -65,10 +62,9 @@ class UsersImageController extends Controller
      */
     public function show($id)
     {
-       $businessProfile = BusinessProfile::find($id);
-       $businessProfile->usersImage;
-       return response()->json($businessProfile, 200);
-    //    dd($userimage);
+        $businessProfile = BusinessProfile::find($id);
+        $businessProfile->usersImage;
+        return response()->json($businessProfile, 200);
     }
 
     /**
@@ -78,9 +74,28 @@ class UsersImageController extends Controller
      * @param  \App\Models\UsersImage  $usersImage
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UsersImage $usersImage)
+    public function update(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'id' => 'required',
+            'file' => 'required|mimes:jpeg,png,jpg'
+        ]);
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
+        $old_img = UsersImage::find($request->id);
+        unlink($old_img->image_path);
+        $file = $request->file('file');
+        $name = $file->getClientOriginalName();
+        try {
+
+            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
+        } catch (Exception $e) {
+            throw $e;
+        }
+        $updated = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
+        $addToDatabase = $old_img->update($updated);
+        return response()->json($addToDatabase);
     }
 
     /**
