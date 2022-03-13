@@ -49,7 +49,7 @@ class BusinessProfileController extends Controller
 
 
 
-        $profile = auth()->user()->businessProfile()->create(array_merge($validator->validated()));
+        $profile = auth()->user()->businessProfile->create(array_merge($validator->validated()));
         if ($request->file) {
             $newRequest["business_profile_id"] = $profile->id;
             $newRequest["file"] = $request->file('file');
@@ -107,7 +107,7 @@ class BusinessProfileController extends Controller
 
         try {
             $updatedProfile =  array_merge($validator->validated());
-            auth()->user()->businessProfile()->where('id', $id)->update($updatedProfile);
+            auth()->user()->businessProfile->where('id', $id)->update($updatedProfile);
             if ($request->file) {
                 $updateImg["imgID"] = $businessProfile->usersImage[0]->id;
                 $updateImg["file"] = $request->file('file');

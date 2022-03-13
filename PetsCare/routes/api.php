@@ -44,7 +44,7 @@ Route::group([
 ], function ($router) {
     Route::get('/user', [BusinessProfileController::class, 'index']);
     Route::post('/business/add', [BusinessProfileController::class, 'store']);
-    Route::get('/business/show/{id}', [BusinessProfileController::class, 'show']);
+    Route::get('/business/details/{id}', [BusinessProfileController::class, 'show']);
     Route::post('/business/update/{id}', [BusinessProfileController::class, 'update']);
     Route::post('/business/delete/{id}', [BusinessProfileController::class, 'destroy']);
     Route::post('/business/image/upload', [UsersImageController::class, 'store']);
@@ -69,6 +69,8 @@ Route::group([
     Route::get('/client/show/{id}', [ClientController::class, 'show']);
     Route::post('/client/edit/{id}', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
+    Route::get('/business/details/{id}', [BusinessProfileController::class, 'show']);
+
 });
 
 Route::group([
