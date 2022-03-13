@@ -6,6 +6,8 @@ use App\Models\ServicePackage;
 use Exception;
 use Illuminate\Http\Request;
 use Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class ServicePackageController extends Controller
 {
@@ -65,6 +67,14 @@ class ServicePackageController extends Controller
     {
         $profileResult = auth()->user()->businessProfile()->find($id);
         $package = $profileResult->servicePackage;
+        return response()->json($package);
+    }
+    public function clientShow($id)
+    {
+        $package = DB::table('business_profiles')
+        ->join('business_profile_service_package', 'business_profiles.id', '=', 'business_profile_id')
+        ->join('service_packages', 'service_package_id', '=', 'service_packages.id')
+        ->where('business_profiles.id', '=',$id)->get();
         return response()->json($package);
     }
 

@@ -71,6 +71,7 @@ Route::group([
     Route::post('/client/edit', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
     Route::get('/business/details/{id}', [BusinessProfileController::class, 'show']);
+    Route::get('/business/package/{id}', [ServicePackageController::class, 'clientShow']);
 
 });
 
