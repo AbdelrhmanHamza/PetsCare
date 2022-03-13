@@ -32,6 +32,7 @@ class UsersImageController extends Controller
      */
     public function store(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'business_profile_id' => 'required',
             'file' => 'required|mimes:jpeg,png,jpg'
@@ -104,8 +105,11 @@ class UsersImageController extends Controller
      * @param  \App\Models\UsersImage  $usersImage
      * @return \Illuminate\Http\Response
      */
-    public function destroy(UsersImage $usersImage)
+    public function destroy(UsersImage $usersImage,$id)
     {
-        //
+        $old_img = UsersImage::find($id);
+        unlink($old_img->image_path);
+        $deleteFromDatabase = $old_img->delete();
+        return response()->json($deleteFromDatabase);
     }
 }

@@ -50,6 +50,7 @@ Route::group([
     Route::post('/business/image/upload', [UsersImageController::class, 'store']);
     Route::post('/business/image/update', [UsersImageController::class, 'update']);
     Route::get('/business/image/show/{id}', [UsersImageController::class, 'show']);
+    Route::get('/business/image/delete/{id}', [UsersImageController::class, 'destroy']);
 
     Route::post('/business/{id}/package/add', [ServicePackageController::class, 'store']);
     Route::get('/business/{id}/package/all', [ServicePackageController::class, 'index']);
@@ -69,6 +70,8 @@ Route::group([
     Route::get('/client/show/{id}', [ClientController::class, 'show']);
     Route::post('/client/edit/{id}', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
+    Route::get('/business/details/{id}', [BusinessProfileController::class, 'show']);
+
 });
 
 Route::group([
