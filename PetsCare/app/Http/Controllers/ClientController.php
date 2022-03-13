@@ -19,10 +19,9 @@ class ClientController extends Controller
      */
     public function index()
     {
-
-        $clientprofiles = ClientProfile::with('pet');
-
-        return response()->json($clientprofiles->get(),200);
+        $user = auth('api')->user();
+        return response()->json(ClientProfile::where('user_id', '=', $user->id)
+        ->first());
     }
 
     /**
@@ -68,6 +67,7 @@ class ClientController extends Controller
     public function show($id)
     {
         $clientprofile = ClientProfile::find($id);
+        
         if (!$clientprofile) {
             return response()->json("the client isnot found", 404);
         }
@@ -81,12 +81,10 @@ class ClientController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        $clientprofile = ClientProfile::find($id);
-        if (!$clientprofile) {
-            return response()->json("the client isnot found", 404);
-        }
+        $clientprofile = auth('api')->user();
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required',
             'last_name' => 'required',
@@ -97,10 +95,9 @@ class ClientController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 400);
         }
-
         try {
             $update = array_merge($validator->validated());
-            $user = auth()->user()->clientProfile()->where('id', $id)->update($update);
+            $user = auth()->user()->clientProfile()->update($update);
         } catch (Exception $e) {
             throw $e;
         }

@@ -68,7 +68,7 @@ Route::group([
     Route::get('/client', [ClientController::class, 'index']);
     Route::post('/client/add', [ClientController::class, 'store']);
     Route::get('/client/show/{id}', [ClientController::class, 'show']);
-    Route::post('/client/edit/{id}', [ClientController::class, 'update']);
+    Route::post('/client/edit', [ClientController::class, 'update']);
     Route::post('/client/delete/{id}', [ClientController::class, 'destroy']);
     Route::get('/business/details/{id}', [BusinessProfileController::class, 'show']);
 
