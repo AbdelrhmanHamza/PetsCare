@@ -33,3 +33,6 @@ Route::resource('pets', App\Http\Controllers\PetsController::class);
 
 
 Route::resource('users', App\Http\Controllers\usersController::class);
+
+
+Route::resource('businessProfiles', App\Http\Controllers\BusinessProfileController::class);

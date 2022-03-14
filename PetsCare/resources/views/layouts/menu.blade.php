@@ -21,3 +21,11 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('businessProfiles.index') }}"
+       class="nav-link {{ Request::is('businessProfiles*') ? 'active' : '' }}">
+        <p>Business Profiles</p>
+    </a>
+</li>
+
+
