@@ -19,3 +19,17 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+
+Route::resource('pets', App\Http\Controllers\PetsController::class);
+
+
+Route::resource('users', App\Http\Controllers\usersController::class);
