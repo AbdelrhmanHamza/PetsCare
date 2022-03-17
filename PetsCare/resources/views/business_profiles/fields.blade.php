@@ -1,13 +1,20 @@
 <!-- User Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('user_id', 'User Id:') !!}
-    {!! Form::number('user_id', null, ['class' => 'form-control']) !!}
+    {!! Form::select('user_id', $users,null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Business Name Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('business_name', 'Business Name:') !!}
     {!! Form::text('business_name', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Business Type Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('business_type', 'Business Type') !!}
+    {!! Form::select('business_type', ['vet'=>'vet','ranch'=> 'ranch'
+        ,'hotel'=>'hotel','private'=>'private'],null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Address Field -->

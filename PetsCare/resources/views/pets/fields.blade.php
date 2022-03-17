@@ -10,6 +10,7 @@
     {!! Form::text('pet_type', null, ['class' => 'form-control']) !!}
 </div>
 
+
 <!-- Pet Breed Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('pet_breed', 'Pet Breed:') !!}
@@ -21,6 +22,12 @@
     {!! Form::label('pet_age', 'Pet Age:') !!}
     {!! Form::text('pet_age', null, ['class' => 'form-control','id'=>'pet_age']) !!}
 </div>
+<!-- has medical condition Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('has_medical_condition', 'Has medical condition:') !!}
+    {!! Form::select('has_medical_condition', ['no','yes'],null, ['class' => 'form-control']) !!}
+</div>
+
 
 @push('page_scripts')
     <script type="text/javascript">

@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateBusinessProfileRequest;
 use App\Http\Requests\UpdateBusinessProfileRequest;
 use App\Repositories\BusinessProfileRepository;
+use App\Repositories\usersRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Models\users;
 use Illuminate\Http\Request;
 use Flash;
 use Response;
@@ -14,9 +16,10 @@ class BusinessProfileController extends AppBaseController
 {
     /** @var BusinessProfileRepository $businessProfileRepository*/
     private $businessProfileRepository;
-
-    public function __construct(BusinessProfileRepository $businessProfileRepo)
+    private $usersRepository;
+    public function __construct(BusinessProfileRepository $businessProfileRepo,usersRepository $usersRepo)
     {
+        $this->usersRepository = $usersRepo;
         $this->businessProfileRepository = $businessProfileRepo;
     }
 
@@ -42,7 +45,9 @@ class BusinessProfileController extends AppBaseController
      */
     public function create()
     {
-        return view('business_profiles.create');
+        $users = $this->usersRepository->all()
+        ->where('type','=','Business')->pluck('user_name', 'id');
+        return view('business_profiles.create')->with('users', $users);
     }
 
     /**

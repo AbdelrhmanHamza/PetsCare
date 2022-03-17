@@ -74,6 +74,32 @@ class BusinessProfile extends Model
         'open_at' => 'required',
         'close_at' => 'required'
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+/**
+ * The roles that belong to the BusinessProfile
+ *
+ * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+ */
+public function servicePackage()
+{
+    return $this->belongsToMany(ServicePackage::class);
+}
 
+
+    public function businessRequest(){
+        return $this->hasMany(ClientBusinessResquest::class);
+    }
+    /**
+     * Get all of the usersImage for the BusinessProfile
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function usersImage()
+    {
+        return $this->hasMany(UsersImage::class);
+    }
     
 }

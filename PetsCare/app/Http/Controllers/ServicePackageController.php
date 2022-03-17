@@ -2,121 +2,155 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ServicePackage;
-use Exception;
+use App\Http\Requests\CreateServicePackageRequest;
+use App\Http\Requests\UpdateServicePackageRequest;
+use App\Repositories\ServicePackageRepository;
+use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Validator;
-use Illuminate\Support\Facades\DB;
+use Flash;
+use Response;
 
-
-class ServicePackageController extends Controller
+class ServicePackageController extends AppBaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index($id)
+    /** @var ServicePackageRepository $servicePackageRepository*/
+    private $servicePackageRepository;
+
+    public function __construct(ServicePackageRepository $servicePackageRepo)
     {
-        $profileResult = auth()->user()->businessProfile()->find($id);
-        if (!$profileResult) {
-            return response()->json('Profile not found', 400);
-        }
-        $profileResult->servicePackage;
-        return response()->json([$profileResult], 200);
+        $this->servicePackageRepository = $servicePackageRepo;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the ServicePackage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function store(Request $request, $id)
+    public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'package_name' => 'required',
-            'package_description' => 'required',
-            'package_price' => 'required',
+        $servicePackages = $this->servicePackageRepository->all();
 
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-        $input = array_merge($validator->validated());
-
-        try {
-            $packageResult = ServicePackage::create($input);
-            $profileResult = auth()->user()->businessProfile()->find($id);
-            $attachResult = $profileResult->servicePackage()->attach($packageResult->id);
-            return response()->json([$input, $packageResult, $profileResult, 'Success']);
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return response()->json($input);
+        return view('service_packages.index')
+            ->with('servicePackages', $servicePackages);
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for creating a new ServicePackage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
+     */
+    public function create()
+    {
+        return view('service_packages.create');
+    }
+
+    /**
+     * Store a newly created ServicePackage in storage.
+     *
+     * @param CreateServicePackageRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateServicePackageRequest $request)
+    {
+        $input = $request->all();
+
+        $servicePackage = $this->servicePackageRepository->create($input);
+
+        Flash::success('Service Package saved successfully.');
+
+        return redirect(route('servicePackages.index'));
+    }
+
+    /**
+     * Display the specified ServicePackage.
+     *
+     * @param int $id
+     *
+     * @return Response
      */
     public function show($id)
     {
-        $profileResult = auth()->user()->businessProfile()->find($id);
-        $package = $profileResult->servicePackage;
-        return response()->json($package);
-    }
-    public function clientShow($id)
-    {
-        $package = DB::table('business_profiles')
-        ->join('business_profile_service_package', 'business_profiles.id', '=', 'business_profile_id')
-        ->join('service_packages', 'service_package_id', '=', 'service_packages.id')
-        ->where('business_profiles.id', '=',$id)->get();
-        return response()->json($package);
-    }
+        $servicePackage = $this->servicePackageRepository->find($id);
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $package = ServicePackage::find($id);
-        $validator = Validator::make($request->all(), [
-            'package_name' => 'required',
-            'package_description' => 'required',
-            'package_price' => 'required',
+        if (empty($servicePackage)) {
+            Flash::error('Service Package not found');
 
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+            return redirect(route('servicePackages.index'));
         }
 
-        $updatedPackage =  array_merge($validator->validated());
-
-        $package->update($updatedPackage);
-
-        return response()->json($updatedPackage, 200);
+        return view('service_packages.show')->with('servicePackage', $servicePackage);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Show the form for editing the specified ServicePackage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function edit($id)
+    {
+        $servicePackage = $this->servicePackageRepository->find($id);
+
+        if (empty($servicePackage)) {
+            Flash::error('Service Package not found');
+
+            return redirect(route('servicePackages.index'));
+        }
+
+        return view('service_packages.edit')->with('servicePackage', $servicePackage);
+    }
+
+    /**
+     * Update the specified ServicePackage in storage.
+     *
+     * @param int $id
+     * @param UpdateServicePackageRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateServicePackageRequest $request)
+    {
+        $servicePackage = $this->servicePackageRepository->find($id);
+
+        if (empty($servicePackage)) {
+            Flash::error('Service Package not found');
+
+            return redirect(route('servicePackages.index'));
+        }
+
+        $servicePackage = $this->servicePackageRepository->update($request->all(), $id);
+
+        Flash::success('Service Package updated successfully.');
+
+        return redirect(route('servicePackages.index'));
+    }
+
+    /**
+     * Remove the specified ServicePackage from storage.
+     *
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function destroy($id)
     {
-        $package = ServicePackage::find($id);
-        $package->businessProfile()->detach();
-        $package->delete();
-        $messege = ['messege' => 'the package deleted'];
-        return response()->json([$messege, $package], 200);
+        $servicePackage = $this->servicePackageRepository->find($id);
+
+        if (empty($servicePackage)) {
+            Flash::error('Service Package not found');
+
+            return redirect(route('servicePackages.index'));
+        }
+
+        $this->servicePackageRepository->delete($id);
+
+        Flash::success('Service Package deleted successfully.');
+
+        return redirect(route('servicePackages.index'));
     }
 }

@@ -2,110 +2,155 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SubscribtionPackage;
-use Exception;
+use App\Http\Requests\CreateSubscribtionPackageRequest;
+use App\Http\Requests\UpdateSubscribtionPackageRequest;
+use App\Repositories\SubscribtionPackageRepository;
+use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Validator;
+use Flash;
+use Response;
 
-class SubscribtionPackageController extends Controller
+class SubscribtionPackageController extends AppBaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    /** @var SubscribtionPackageRepository $subscribtionPackageRepository*/
+    private $subscribtionPackageRepository;
+
+    public function __construct(SubscribtionPackageRepository $subscribtionPackageRepo)
     {
-        $allPackages = SubscribtionPackage::all();
-        return response()->json($allPackages, 200);
+        $this->subscribtionPackageRepository = $subscribtionPackageRepo;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the SubscribtionPackage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function store(Request $request)
+    public function index(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'subscribtion_package_name' => 'required',
-            'subscribtion_package_description' => 'required',
-            'activation_period' => 'required',
-            'subscribtion_package_price' => 'required',
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-        try {
-            $updatedProfile =  array_merge($validator->validated());
-            SubscribtionPackage::create($updatedProfile);
-        } catch (Exception $e) {
-            throw $e;
-        }
+        $subscribtionPackages = $this->subscribtionPackageRepository->all();
 
-        return response()->json($updatedProfile, 200);
+        return view('subscribtion_packages.index')
+            ->with('subscribtionPackages', $subscribtionPackages);
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for creating a new SubscribtionPackage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
+     */
+    public function create()
+    {
+        return view('subscribtion_packages.create');
+    }
+
+    /**
+     * Store a newly created SubscribtionPackage in storage.
+     *
+     * @param CreateSubscribtionPackageRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateSubscribtionPackageRequest $request)
+    {
+        $input = $request->all();
+
+        $subscribtionPackage = $this->subscribtionPackageRepository->create($input);
+
+        Flash::success('Subscribtion Package saved successfully.');
+
+        return redirect(route('subscribtionPackages.index'));
+    }
+
+    /**
+     * Display the specified SubscribtionPackage.
+     *
+     * @param int $id
+     *
+     * @return Response
      */
     public function show($id)
     {
-        $package = SubscribtionPackage::find($id);
-        if(!$package){
+        $subscribtionPackage = $this->subscribtionPackageRepository->find($id);
 
-            return response()->json('package not found',400);
+        if (empty($subscribtionPackage)) {
+            Flash::error('Subscribtion Package not found');
+
+            return redirect(route('subscribtionPackages.index'));
         }
-        return response()->json($package);
+
+        return view('subscribtion_packages.show')->with('subscribtionPackage', $subscribtionPackage);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing the specified SubscribtionPackage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     *
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $package = SubscribtionPackage::find($id);
-        if (!$package) {
-            return response()->json('package not found', 400);
+        $subscribtionPackage = $this->subscribtionPackageRepository->find($id);
+
+        if (empty($subscribtionPackage)) {
+            Flash::error('Subscribtion Package not found');
+
+            return redirect(route('subscribtionPackages.index'));
         }
-        $validator = Validator::make($request->all(), [
-            'subscribtion_package_name' => 'required',
-            'subscribtion_package_description' => 'required',
-            'activation_period' => 'required',
-            'subscribtion_package_price' => 'required'
-        ]);
-        if ($validator->fails())
-        {
-        return response()->json($validator->errors(),400);
-        }
-        try {
-            $updatedPackage = array_merge($validator->validated());
-            $package->update($updatedPackage);
-            return response()->json($package);
-        } catch (Exception $e) {
-            throw $e;
-        }
+
+        return view('subscribtion_packages.edit')->with('subscribtionPackage', $subscribtionPackage);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update the specified SubscribtionPackage in storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @param UpdateSubscribtionPackageRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateSubscribtionPackageRequest $request)
+    {
+        $subscribtionPackage = $this->subscribtionPackageRepository->find($id);
+
+        if (empty($subscribtionPackage)) {
+            Flash::error('Subscribtion Package not found');
+
+            return redirect(route('subscribtionPackages.index'));
+        }
+
+        $subscribtionPackage = $this->subscribtionPackageRepository->update($request->all(), $id);
+
+        Flash::success('Subscribtion Package updated successfully.');
+
+        return redirect(route('subscribtionPackages.index'));
+    }
+
+    /**
+     * Remove the specified SubscribtionPackage from storage.
+     *
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function destroy($id)
     {
-        $packageToBeDeleted=SubscribtionPackage::find($id);
-        $packageToBeDeleted->delete();
-        $message=['message'=>'package succesfully deleted'];
-        return response()->json([$message,$packageToBeDeleted],200);
+        $subscribtionPackage = $this->subscribtionPackageRepository->find($id);
+
+        if (empty($subscribtionPackage)) {
+            Flash::error('Subscribtion Package not found');
+
+            return redirect(route('subscribtionPackages.index'));
+        }
+
+        $this->subscribtionPackageRepository->delete($id);
+
+        Flash::success('Subscribtion Package deleted successfully.');
+
+        return redirect(route('subscribtionPackages.index'));
     }
 }

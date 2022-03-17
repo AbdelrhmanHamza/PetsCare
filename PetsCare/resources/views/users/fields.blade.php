@@ -15,3 +15,9 @@
     {!! Form::label('password', 'Password:') !!}
     {!! Form::password('password', ['class' => 'form-control']) !!}
 </div>
+
+<!-- Type Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('type', 'Type:') !!}
+    {!! Form::select('type', ['Client'=>'Client','Business'=>'Business'],null,['class' => 'form-control']) !!}
+</div>

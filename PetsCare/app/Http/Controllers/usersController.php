@@ -7,6 +7,7 @@ use App\Http\Requests\UpdateusersRequest;
 use App\Repositories\usersRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Flash;
 use Response;
 
@@ -56,7 +57,12 @@ class usersController extends AppBaseController
     {
         $input = $request->all();
 
-        $users = $this->usersRepository->create($input);
+        $users = $this->usersRepository->create([
+            'user_name' => $input['user_name'],
+            'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+            'type'=>$input['type']
+        ]);
 
         Flash::success('Users saved successfully.');
 
@@ -120,8 +126,14 @@ class usersController extends AppBaseController
 
             return redirect(route('users.index'));
         }
+        $input = $request->all();
 
-        $users = $this->usersRepository->update($request->all(), $id);
+        $users = $this->usersRepository->update([
+            'user_name' => $input['user_name'],
+            'email' => $input['email'],
+            'password' => Hash::make($input['password']),
+            'type'=>$input['type']
+        ], $id);
 
         Flash::success('Users updated successfully.');
 

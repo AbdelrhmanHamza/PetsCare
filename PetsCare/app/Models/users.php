@@ -55,7 +55,7 @@ class users extends Model
      */
     public static $rules = [
         'user_name' => 'required',
-        'email' => 'required|unique',
+        'email' => 'required',
         'type' => 'required',
         'password' => 'required'
     ];

@@ -29,3 +29,29 @@
 </li>
 
 
+<li class="nav-item">
+    <a href="{{ route('servicePackages.index') }}"
+       class="nav-link {{ Request::is('servicePackages*') ? 'active' : '' }}">
+        <p>Service Packages</p>
+    </a>
+</li>
+
+
+<li class="nav-item">
+    <a href="{{ route('subscribtionPackages.index') }}"
+       class="nav-link {{ Request::is('subscribtionPackages*') ? 'active' : '' }}">
+        <p>Subscribtion Packages</p>
+    </a>
+</li>
+
+
+<li class="nav-item">
+    <a href="{{ route('clientProfiles.index') }}"
+       class="nav-link {{ Request::is('clientProfiles*') ? 'active' : '' }}">
+        <p>Client Profiles</p>
+    </a>
+</li>
+
+
+
+
