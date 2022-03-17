@@ -19,3 +19,33 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Auth::routes();
+
+
+Route::resource('pets', App\Http\Controllers\PetsController::class);
+
+
+Route::resource('users', App\Http\Controllers\usersController::class);
+
+
+Route::resource('businessProfiles', App\Http\Controllers\BusinessProfileController::class);
+
+
+Route::resource('servicePackages', App\Http\Controllers\ServicePackageController::class);
+
+
+Route::resource('subscribtionPackages', App\Http\Controllers\SubscribtionPackageController::class);
+
+
+Route::resource('clientProfiles', App\Http\Controllers\ClientProfileController::class);
+
+
+
+

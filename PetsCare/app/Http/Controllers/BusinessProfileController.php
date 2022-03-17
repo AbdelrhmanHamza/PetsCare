@@ -2,185 +2,160 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\BusinessProfile;
-use Exception;
-use Illuminate\Cache\Repository;
-use App\Models\UsersImage;
-use Storage;
+use App\Http\Requests\CreateBusinessProfileRequest;
+use App\Http\Requests\UpdateBusinessProfileRequest;
+use App\Repositories\BusinessProfileRepository;
+use App\Repositories\usersRepository;
+use App\Http\Controllers\AppBaseController;
+use App\Models\users;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Flash;
+use Response;
 
-class BusinessProfileController extends Controller
+class BusinessProfileController extends AppBaseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    /** @var BusinessProfileRepository $businessProfileRepository*/
+    private $businessProfileRepository;
+    private $usersRepository;
+    public function __construct(BusinessProfileRepository $businessProfileRepo,usersRepository $usersRepo)
     {
-        $user = auth('api')->user();
-        return response()->json(BusinessProfile::leftJoin('users_images', 'business_profiles.id', '=', 'business_profile_id')
-        ->where('user_id', '=', $user->id)
-        ->select('business_profiles.*','users_images.image_path')
-        ->distinct()
-        ->get());
+        $this->usersRepository = $usersRepo;
+        $this->businessProfileRepository = $businessProfileRepo;
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Display a listing of the BusinessProfile.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     *
+     * @return Response
      */
-    public function store(Request $request)
-    {/*
-        -> create business profile
-        -> use it's id to create images
-         */
-        $validator = Validator::make($request->all(), [
-            'business_type' => 'required',
-            'business_name' => 'required',
-            'address' => 'required',
-            'phone_number' => 'required',
-            'service_description' => 'required',
-            'open_at' => 'required',
-            'close_at' => 'required'
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
+    public function index(Request $request)
+    {
+        $businessProfiles = $this->businessProfileRepository->all();
 
-
-
-        $profile = auth()->user()->businessProfile()->create(array_merge($validator->validated()));
-        if ($request->file) {
-            $newRequest["business_profile_id"] = $profile->id;
-            $newRequest["file"] = $request->file('file');
-            $newRequest["name"] = $request->file('file')->getClientOriginalName();
-            $image_added = $this->storeImg($newRequest);
-            $profile["img"] = $image_added;
-            return response()->json($profile, 200);
-        }
-        return response()->json($profile, 200);
+        return view('business_profiles.index')
+            ->with('businessProfiles', $businessProfiles);
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for creating a new BusinessProfile.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Response
+     */
+    public function create()
+    {
+        $users = $this->usersRepository->all()
+        ->where('type','=','Business')->pluck('user_name', 'id');
+        return view('business_profiles.create')->with('users', $users);
+    }
+
+    /**
+     * Store a newly created BusinessProfile in storage.
+     *
+     * @param CreateBusinessProfileRequest $request
+     *
+     * @return Response
+     */
+    public function store(CreateBusinessProfileRequest $request)
+    {
+        $input = $request->all();
+
+        $businessProfile = $this->businessProfileRepository->create($input);
+
+        Flash::success('Business Profile saved successfully.');
+
+        return redirect(route('businessProfiles.index'));
+    }
+
+    /**
+     * Display the specified BusinessProfile.
+     *
+     * @param int $id
+     *
+     * @return Response
      */
     public function show($id)
     {
-        $businessProfile = BusinessProfile::find($id);
-        if (!$businessProfile) {
-            return response()->json("business Profile not found", 400);
+        $businessProfile = $this->businessProfileRepository->find($id);
+
+        if (empty($businessProfile)) {
+            Flash::error('Business Profile not found');
+
+            return redirect(route('businessProfiles.index'));
         }
-        $businessProfile->usersImage;
-        return $businessProfile;
+
+        return view('business_profiles.show')->with('businessProfile', $businessProfile);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing the specified BusinessProfile.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     *
+     * @return Response
      */
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $businessProfile = BusinessProfile::find($id);
-        if (!$businessProfile) {
-            return response()->json("businessProfile not found", 400);
+        $businessProfile = $this->businessProfileRepository->find($id);
+
+        if (empty($businessProfile)) {
+            Flash::error('Business Profile not found');
+
+            return redirect(route('businessProfiles.index'));
         }
 
-        $validator = Validator::make($request->all(), [
-            'business_type' => 'required',
-            'business_name' => 'required',
-            'address' => 'required',
-            'phone_number' => 'required',
-            'service_description' => 'required',
-            'open_at' => 'required',
-            'close_at' => 'required'
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
-        }
-
-        try {
-            $updatedProfile =  array_merge($validator->validated());
-            auth()->user()->businessProfile()->where('id', $id)->update($updatedProfile);
-            if ($request->file) {
-                $updateImg["imgID"] = $businessProfile->usersImage[0]->id;
-                $updateImg["file"] = $request->file('file');
-                $updateImg["name"] = $request->file('file')->getClientOriginalName();
-                $image_added = $this->updateImg($updateImg);
-                $profile["img"] = $image_added;
-                return response()->json($profile, 200);
-            }
-        } catch (Exception $e) {
-            throw $e;
-        }
-
-        return response()->json($updatedProfile, 200);
+        return view('business_profiles.edit')->with('businessProfile', $businessProfile);
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Update the specified BusinessProfile in storage.
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param int $id
+     * @param UpdateBusinessProfileRequest $request
+     *
+     * @return Response
+     */
+    public function update($id, UpdateBusinessProfileRequest $request)
+    {
+        $businessProfile = $this->businessProfileRepository->find($id);
+
+        if (empty($businessProfile)) {
+            Flash::error('Business Profile not found');
+
+            return redirect(route('businessProfiles.index'));
+        }
+
+        $businessProfile = $this->businessProfileRepository->update($request->all(), $id);
+
+        Flash::success('Business Profile updated successfully.');
+
+        return redirect(route('businessProfiles.index'));
+    }
+
+    /**
+     * Remove the specified BusinessProfile from storage.
+     *
+     * @param int $id
+     *
+     * @throws \Exception
+     *
+     * @return Response
      */
     public function destroy($id)
     {
-        $dataToBeDeleted = BusinessProfile::find($id);
-        $dataToBeDeleted->delete();
-        return response()->json('deleted', 200);
-    }
+        $businessProfile = $this->businessProfileRepository->find($id);
 
-    private function storeImg($request)
-    {
-        $validator = Validator::make($request, [
-            'business_profile_id' => 'required',
-            'file' => 'required|mimes:jpeg,png,jpg'
-        ]);
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 400);
+        if (empty($businessProfile)) {
+            Flash::error('Business Profile not found');
+
+            return redirect(route('businessProfiles.index'));
         }
-        $file = $request["file"];
-        $name = $request["name"];
-        try {
 
-            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
-        } catch (Exception $e) {
-            throw $e;
-        }
-        // dd($name);
+        $this->businessProfileRepository->delete($id);
 
-        $uploaded = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
-        $addToDatabase = UsersImage::create($uploaded);
-        return asset('storage/' . $path);
-    }
-    private function updateImg($request)
-    {
-        $validator = Validator::make($request, [
-            'id' => 'required',
-            'file' => 'required|mimes:jpeg,png,jpg'
-        ]);
-        $old_img = UsersImage::find($request["imgID"]);
-        unlink($old_img->image_path);
-        $file = $request["file"];
-        $name = $request["name"];
-        try {
+        Flash::success('Business Profile deleted successfully.');
 
-            $path = Storage::disk('public')->put('/BusinessProfiles', $file);
-        } catch (Exception $e) {
-            throw $e;
-        }
-        $updated = array_merge($validator->validated(), ['image_name' => $name, 'image_path' => 'storage/' . $path]);
-        $old_img->update($updated);
-        return asset('storage/' . $path);
+        return redirect(route('businessProfiles.index'));
     }
 }
