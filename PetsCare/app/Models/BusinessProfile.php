@@ -89,6 +89,7 @@ public function servicePackage()
 }
 
 
+
     public function businessRequest(){
         return $this->hasMany(ClientBusinessResquest::class);
     }
@@ -101,5 +102,6 @@ public function servicePackage()
     {
         return $this->hasMany(UsersImage::class);
     }
-    
+     
+   
 }

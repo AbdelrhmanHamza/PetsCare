@@ -66,6 +66,12 @@ class ClientProfile extends Model
         'address' => 'required',
         'phone_number' => 'required'
     ];
+    public function pet(){
+        return $this->hasMany(Pet::class);
+    }
 
+    public function clientRequest(){
+        return $this->hasMany(ClientBusinessResquest::class);
+    }
     
 }

@@ -12,7 +12,31 @@ class BusinessFilterControllerApi extends Controller
 {
 
     public function businesses(Request $request){
-        return response()->json(BusinessProfile::paginate(6));
+        $dataToFilter = DB::table('business_profiles')
+        ->join('business_profile_service_package', 'business_profiles.id', '=', 'business_profile_id')
+        ->join('service_packages', 'service_package_id', '=', 'service_packages.id');
+        if ($request->address) {
+            $dataToFilter->where('address', 'like', '%' . $request->address . '%');
+        }
+
+        if ($request->open_at && $request->close_at) {
+            $dataToFilter->where('open_at', (int)$request->open_at);
+            $dataToFilter->where('close_at', (int)$request->close_at);
+        }
+
+        if ($request->max_price) {
+            $dataToFilter->where('package_price', '>=', (float)$request->max_price);
+        }
+        if ($request->type) {
+            $dataToFilter->where('business_type', '=', $request->type);
+        }
+       
+        $data = $dataToFilter->select('business_profiles.id',
+        'business_profiles.business_name','business_profiles.address','business_profiles.close_at',
+        'business_profiles.open_at','business_profiles.business_type',)
+        ->paginate(10);
+
+        return response()->json($data);
     }
 
     /**
@@ -38,6 +62,9 @@ class BusinessFilterControllerApi extends Controller
 
         if ($request->max_price) {
             $dataToFilter->where('package_price', '>=', (float)$request->max_price);
+        }
+        if ($request->type) {
+            $dataToFilter->where('business_type', '=', $request->type);
         }
 
         $data = $dataToFilter->paginate(10);

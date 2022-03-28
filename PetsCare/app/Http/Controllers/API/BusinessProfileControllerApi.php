@@ -20,11 +20,12 @@ class BusinessProfileControllerApi extends Controller
     public function index()
     {
         $user = auth('api')->user();
-        return response()->json(BusinessProfile::leftJoin('users_images', 'business_profiles.id', '=', 'business_profile_id')
-        ->where('user_id', '=', $user->id)
-        ->select('business_profiles.*','users_images.image_path')
-        ->distinct()
-        ->get());
+        $business=BusinessProfile::where('user_id', '=', $user->id)
+        ->get();
+        foreach($business as $b){
+$b->usersImage;
+        }
+        return response()->json($business);
     }
 
     /**
