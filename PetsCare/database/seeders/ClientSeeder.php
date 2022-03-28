@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 use App\Models\ClientProfile;
-use App\Models\User;
+use App\Models\users;
 use Illuminate\Database\Seeder;
 
 class ClientSeeder extends Seeder
@@ -17,20 +17,12 @@ class ClientSeeder extends Seeder
 
          ;
         ClientProfile::create([
-                'user_id'=> User::where('type','client')->get()->first()->id,
+                'user_id'=> users::where('type','client')->get()->first()->id,
                 'first_name'=>'Amr',
                 'last_name'=>'Samy',
                 'address'=>'6 october city',
                 'phone_number'=>'01120623383'
         ]);
-
-        ClientProfile::create([
-            'user_id'=> User::where('type','client')->get()->first()->id,
-            'first_name'=>'Boody',
-            'last_name'=>'Hamza',
-            'address'=>'maadi city',
-            'phone_number'=>'01064829620'
-    ]);
 
 
     }
