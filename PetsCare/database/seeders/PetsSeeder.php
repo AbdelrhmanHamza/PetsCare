@@ -16,7 +16,7 @@ class PetsSeeder extends Seeder
     public function run()
     {
         Pet::create([
-            'client_profile_id' => ClientProfile::get()->first()->id,
+            'client_profile_id' => 1,
             'pet_type' => 'dogs',
             'pet_breed' => 'german',
             'pet_age' => '2021-12-12',
@@ -24,7 +24,7 @@ class PetsSeeder extends Seeder
         ]);
 
         Pet::create([
-            'client_profile_id' => ClientProfile::get()->first()->id,
+            'client_profile_id' => 1,
             'pet_type' => 'cats',
             'pet_breed' => 'siamy',
             'pet_age' => '2021-12-12',
@@ -32,7 +32,7 @@ class PetsSeeder extends Seeder
         ]);
 
         Pet::create([
-            'client_profile_id' => ClientProfile::get()->first()->id,
+            'client_profile_id' => 1,
             'pet_type' => 'cats',
             'pet_breed' => 'shrazy',
             'pet_age' => '2021-12-12',

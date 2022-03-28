@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\BusinessProfile;
-use App\Models\users;
 use Illuminate\Database\Seeder;
 
 class BusinessSeeder extends Seeder
@@ -16,7 +15,7 @@ class BusinessSeeder extends Seeder
     public function run()
     {
         BusinessProfile::create([
-            'user_id'=> users::where('type', 'business')->get()->first()->id,
+            'user_id'=> 2,
             'business_type'=>'vet',
             'business_name'=>'we care',
             'address'=>'6 october city',
@@ -27,7 +26,7 @@ class BusinessSeeder extends Seeder
     ]);
 
     BusinessProfile::create([
-        'user_id'=>users::where('type', 'business')->get()->first()->id,
+        'user_id'=>2,
         'business_type'=>'vet',
         'business_name'=>'we care',
         'address'=>'6 october city',

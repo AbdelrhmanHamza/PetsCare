@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\SubscribtionPackage;
-use App\Models\User;
+
 use App\Models\UserSubsrcibtionPackage;
 use Illuminate\Database\Seeder;
 
@@ -17,10 +16,12 @@ class UserSubscriptionPackageSeeder extends Seeder
     public function run()
     {
         UserSubsrcibtionPackage::create([
-        'user_id' => User::where('type','business')->get()->first()->id,
-        'subscribtion_package_id' => SubscribtionPackage::get()->first()->id,
+        'user_id' => 1,
+        'subscribtion_package_id' => 1,
         'subscribtion_date' => '2021-10-10'
     ]);
+
+    
 
     }
 }

@@ -17,8 +17,8 @@ class BusinessProfileServiceSeeder extends Seeder
     public function run()
     {
         DB::table('business_profile_service_package')->insert([
-            'business_profile_id'=>BusinessProfile::get()->first()->id,
-            'service_package_id'=>ServicePackage::get()->first()->id
+            'business_profile_id'=>1,
+            'service_package_id'=>1
         ]);
     }
 }
