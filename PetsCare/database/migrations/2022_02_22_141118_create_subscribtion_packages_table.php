@@ -20,6 +20,7 @@ class CreateSubscribtionPackagesTable extends Migration
             $table->longText('subscribtion_package_description');
             $table->integer('activation_period');
             $table->decimal('subscribtion_package_price');
+            $table->softDeletes();
         });
     }
 

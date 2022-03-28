@@ -29,6 +29,7 @@ class CreateBusinessProfilesTable extends Migration
                     ->constrained()
                     ->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

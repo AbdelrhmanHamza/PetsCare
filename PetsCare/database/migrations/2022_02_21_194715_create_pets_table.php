@@ -20,6 +20,7 @@ class CreatePetsTable extends Migration
             $table->string('pet_breed');
             $table->dateTime('pet_age');
             $table->boolean('has_medical_condition');
+            $table->softDeletes();
             $table->foreign('client_profile_id')
             ->references('id')
             ->on('client_profiles')

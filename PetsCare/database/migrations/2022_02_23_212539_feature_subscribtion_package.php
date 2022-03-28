@@ -17,6 +17,7 @@ class FeatureSubscribtionPackage extends Migration
             $table->id();
             $table->unsignedBigInteger('feature_id');
             $table->unsignedBigInteger('subscribtion_package_id');
+            $table->softDeletes();   
             $table->timestamps();
         });
     }
