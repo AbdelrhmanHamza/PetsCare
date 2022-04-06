@@ -31,10 +31,7 @@ class BusinessFilterControllerApi extends Controller
             $dataToFilter->where('business_type', '=', $request->type);
         }
        
-        $data = $dataToFilter->select('business_profiles.id',
-        'business_profiles.business_name','business_profiles.address','business_profiles.close_at',
-        'business_profiles.open_at','business_profiles.business_type',)
-        ->paginate(10);
+        $data = $dataToFilter->paginate(10);
 
         return response()->json($data);
     }
