@@ -7,6 +7,7 @@ use App\Models\SubscribtionPackage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\ClientProfile;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 // use Validator;
@@ -52,6 +53,7 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
+        
         $validator = Validator::make($request->all(), [
             'user_name' => 'required|string|between:2,100',
             'email' => 'required|string|email|max:100|unique:users',
@@ -65,6 +67,13 @@ class AuthController extends Controller
             $validator->validated(),
             ['password' => bcrypt($request->password)]
         ));
+        ClientProfile::create([
+            'user_id'=> $user->id,
+            'first_name'=>$user->user_name,
+            'last_name'=>'please fill last name',
+            'address'=>'please fill  address',
+            'phone_number'=>'please fill phone '
+    ]);
         return response()->json([
             'message' => 'User successfully registered',
             'user' => $user

@@ -17,7 +17,7 @@ class PetControllerApi extends Controller
      */
     public function index()
     {
-        $pets=Pet::get()->all();
+        $pets = auth('api')->user()->clientProfile->pet;
         return response()->json($pets, 200);
     }
 
